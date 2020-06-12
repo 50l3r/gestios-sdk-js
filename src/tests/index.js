@@ -1,26 +1,20 @@
 const GestiOS = require('../index');
 
-const gestios = new GestiOS({
-	project: 'calltek',
-	token: 'w8wwk44swow4ck0wskk4gocso8w8ccwkoksgwg44',
-	env: 'local',
-	debug: false,
-});
-
 
 async function getApps() {
-	const init = await gestios.init(); //
+	try {
+		const gestios = await new GestiOS({
+			project: 'calltek',
+			token: 'w8wwk44swow4ck0wskk4gocso8w8ccwkoksgwg44',
+			env: 'local',
+			debug: false,
+		});
 
-	if (init) {
-		try {
-			// const empresas = await gestios.app('empresas');
-			const data = await gestios.config.get(['FacturaSerie', 'IVA']);
-			console.log(data);
-
-			console.log(gestios.config.keys);
-		} catch (error) {
-			console.log(error.message);
-		}
+		// const empresas = await gestios.app('empresas');
+		const data = await gestios.app('empresas').list();
+		console.log(data);
+	} catch (error) {
+		console.log(error.message);
 	}
 }
 

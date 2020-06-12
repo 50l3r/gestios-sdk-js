@@ -1,7 +1,7 @@
 {
-	"name": "gestios-sdk",
-	"version": "0.1.0",
-	"description": "GestiOS SDK",
+	"name": "gestios-sdk-js",
+	"version": "0.1.4",
+	"description": "GestiOS Javascript SDK",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
