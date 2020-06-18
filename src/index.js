@@ -3,8 +3,8 @@ const Core = require('./core');
 const Project = require('./modules/project');
 
 module.exports = class GestiOS extends Core {
-	constructor({ project, token, env = 'production', debug = false }) {
-		super({ project, token, env, debug });
+	constructor({ project, token, url = 'https://gestios.es', debug = false }) {
+		super({ project, token, url, debug });
 
 		return this.init();
 	}
@@ -13,9 +13,9 @@ module.exports = class GestiOS extends Core {
 		return new Promise((resolve, reject) => {
 			try {
 				this.$http.get('apps').then((response) => {
-					resolve(new Project({ project: this.project, token: this.token, env: this.env, debug: this.debug, apps: response.data }));
+					resolve(new Project({ project: this.project, token: this.token, url: this.url, debug: this.debug, apps: response.data }));
 				}).catch((error) => {
-					reject(this._error(error));
+					throw error;
 				});
 			} catch (error) {
 				reject(this._error(error));

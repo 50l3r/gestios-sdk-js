@@ -16,7 +16,7 @@ const GestiOS = require('gestios-sdk-js');
 const gestios = new GestiOS({
 	project: 'YOUR_PROJECT_NAME',
 	token: 'YOUR_TOKEN_ACCESS',
-	env: 'production|development|local',
+	url: 'YOUR_GESTIOS_URL',
 	debug: true|false,
 });
 

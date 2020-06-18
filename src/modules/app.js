@@ -88,7 +88,7 @@ module.exports = class App {
 	}
 
 	// Add item
-	add({ params, callback = null }) {
+	add(params, callback = null) {
 		return new Promise((resolve, reject) => {
 			try {
 				const data = this._processFields(params);

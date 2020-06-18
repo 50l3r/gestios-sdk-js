@@ -18,8 +18,8 @@ const Users = require('./users');
 
 
 module.exports = class Project extends Core {
-	constructor({ project, token, env, debug, apps = [] }) {
-		super({ project, token, env, debug });
+	constructor({ project, token, url, debug, apps = [] }) {
+		super({ project, token, url, debug });
 
 		this.apps = apps;
 		this._loadModules();
