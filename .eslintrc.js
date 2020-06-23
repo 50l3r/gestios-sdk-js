@@ -8,7 +8,7 @@ module.exports = {
 		'airbnb-base'
 	],
 	rules: {
-		"no-console": "warn",
+		"no-console": ["error", { allow: ["warn", "error"] }],
 		"no-param-reassign": 0,
 		"global-require": 0,
 		"object-curly-newline": 0,

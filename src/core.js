@@ -3,18 +3,22 @@ const { NetworkError, GestiOSError } = require('./errors');
 
 module.exports = class Core {
 	constructor({ project, token, url = 'https://gestios.es', debug = false }) {
-		this.project = project;
-		this.token = token;
-		this.url = url;
-		this.debug = debug;
+		if (project && token && url) {
+			this.project = project;
+			this.token = token;
+			this.url = url;
+			this.debug = debug;
 
-		this.baseUrl = `${this.url}/api/1/${this.project}/`;
+			this.baseUrl = `${this.url}/api/1/${this.project}/`;
 
-		this.$http = axios.create({
-			baseURL: `${this.url}/api/1/${this.project}/`,
-		});
+			this.$http = axios.create({
+				baseURL: `${this.url}/api/1/${this.project}/`,
+			});
 
-		this._request();
+			this._request();
+		} else {
+			throw new Error('No se han definido los parametros necesarios en la configuración de gestiOS');
+		}
 	}
 
 	_request() {
@@ -25,7 +29,6 @@ module.exports = class Core {
 	}
 
 	_error(error) {
-		// eslint-disable-next-line no-console
 		if (this.debug) console.error(error);
 
 		if (!error.response) {

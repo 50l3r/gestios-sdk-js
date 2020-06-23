@@ -1,8 +1,7 @@
 module.exports = class App {
-	constructor(api, app) {
+	constructor(api, slug) {
 		this.gestiOS = api;
-		this.app = app;
-		this.slug = app.Permalink;
+		this.slug = slug;
 	}
 
 	// List items
@@ -91,10 +90,9 @@ module.exports = class App {
 	add(params, callback = null) {
 		return new Promise((resolve, reject) => {
 			try {
-				const data = this._processFields(params);
-				if (callback) data.callback_url = callback;
+				if (callback) params.callback_url = callback;
 
-				this.gestiOS.$http.post(`/app/${this.slug}`, new URLSearchParams(data)).then((response) => {
+				this.gestiOS.$http.post(`/app/${this.slug}`, new URLSearchParams(params)).then((response) => {
 					resolve({
 						ok: true,
 						data: response.data.data,
@@ -112,10 +110,9 @@ module.exports = class App {
 	edit({ id, params, callback = null }) {
 		return new Promise((resolve, reject) => {
 			try {
-				const data = this._processFields(params);
-				if (callback) data.callback_url = callback;
+				if (callback) params.callback_url = callback;
 
-				this.gestiOS.$http.post(`/app/${this.slug}/${id}`, new URLSearchParams(data)).then((response) => {
+				this.gestiOS.$http.post(`/app/${this.slug}/${id}`, new URLSearchParams(params)).then((response) => {
 					resolve({
 						ok: true,
 						data: response.data.data,
@@ -164,87 +161,5 @@ module.exports = class App {
 				reject(this.gestiOS._error(error));
 			}
 		});
-	}
-
-	// Process fields before request
-	_processFields(params) {
-		const FinalParams = {};
-
-		Object.keys(params).forEach((key) => {
-			if (key.substr(0, 1) !== '_') { // Only custom fields
-				if (this.app.Fields[key]) {
-					// Si es un campo de app se procesa
-					if (params[key] || params[key] === 0 || this.app.Fields[key].Type === 'text' || this.app.Fields[key].Type === 'image') {
-						if (this.app.Fields[key].Type === 'relation' && typeof params[key] === 'object') {
-							if (params[key]._EntityId > 0) {
-								FinalParams[key] = params[key]._EntityId;
-							}
-						} else if (this.app.Fields[key].Type === 'relation' && (params[key] === '' || params[key] === 0)) {
-							FinalParams[key] = null;
-						} else if ((this.app.Fields[key].Type !== 'relation' || params[key] !== 0) && params[key] != null) {
-							FinalParams[key] = params[key];
-						}
-					}
-				} else if (params[key] != null) {
-					// Si es un campo ajeno se agrega
-					FinalParams[key] = params[key];
-				}
-			}
-		});
-
-		return FinalParams;
-	}
-
-	// Generate app filter for search
-	filter({ value, parent = 'OR' }) {
-		try {
-			const Filter = {
-				_ParentOperator: parent,
-				_Operator: 'OR',
-				Fields: {},
-			};
-
-			Object.keys(this.app.Fields).forEach((i) => {
-				if (this.app.Fields[i].Searchable) {
-					Filter.Fields[this.app.Fields[i].Name] = {
-						type: 4,
-						string: value,
-						opt: '%',
-					};
-				}
-			});
-
-			const Filters = [];
-
-			if (value && Filter) {
-				Filters.push(Filter);
-			}
-
-			return Filters;
-		} catch (error) {
-			// eslint-disable-next-line no-console
-			if (this.gestiOS.debug) console.error(error);
-			return false;
-		}
-	}
-
-	// Get value of select field
-	select(field, value) {
-		if (typeof this.app.Fields[field] !== 'undefined') {
-			const vars = JSON.parse(App.Fields[field].Vars);
-			let name = '';
-
-			value = parseInt(value, 10);
-			vars.forEach((option) => {
-				const id = parseInt(option.id, 10);
-				if (value === id) {
-					({ name } = option);
-				}
-			});
-
-			if (name) return name;
-		}
-
-		return false;
 	}
 };
