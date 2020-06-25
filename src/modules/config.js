@@ -1,8 +1,6 @@
-
 module.exports = class Config {
 	constructor(api) {
 		this.gestiOS = api;
-		this.keys = {};
 	}
 
 	// Get configs
@@ -18,19 +16,14 @@ module.exports = class Config {
 					params: {
 						keys: JSON.stringify(filter),
 					},
-				}).then((response) => {
-					const { data } = response.data;
-					this.keys = { ...data, ...this.keys };
-
+				}).then((res) => {
 					resolve({
-						ok: true,
-						data: response.data.data,
+						...res,
+						data: res.data ? res.data.data : [],
 					});
-				}).catch((error) => {
-					reject(this.gestiOS._error(error));
-				});
+				}).catch((error) => reject(error));
 			} catch (error) {
-				reject(this.gestiOS._error(error));
+				reject(error);
 			}
 		});
 	}
@@ -39,15 +32,11 @@ module.exports = class Config {
 	set(keys) {
 		return new Promise((resolve, reject) => {
 			try {
-				this.gestiOS.$http.post('/config', new URLSearchParams({ keys: JSON.stringify(keys) })).then(() => {
-					resolve({
-						ok: true,
-					});
-				}).catch((error) => {
-					reject(this.gestiOS._error(error));
-				});
+				this.gestiOS.$http.post('/config', new URLSearchParams({ keys: JSON.stringify(keys) })).then((res) => {
+					resolve(res);
+				}).catch((error) => reject(error));
 			} catch (error) {
-				reject(this.gestiOS._error(error));
+				reject(error);
 			}
 		});
 	}

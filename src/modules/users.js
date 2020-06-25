@@ -1,3 +1,4 @@
+
 module.exports = class Users {
 	constructor(api) {
 		this.gestiOS = api;
@@ -13,17 +14,15 @@ module.exports = class Users {
 						search,
 						limit,
 					},
-				}).then((response) => {
+				}).then((res) => {
 					resolve({
-						ok: true,
-						data: response.data.data,
-						total: response.data.total,
+						...res,
+						data: res.data ? res.data.data : [],
+						total: res.data ? res.data.total : 0,
 					});
-				}).catch((error) => {
-					reject(this.gestiOS._error(error));
-				});
+				}).catch((error) => reject(error));
 			} catch (error) {
-				reject(this.gestiOS._error(error));
+				reject(error);
 			}
 		});
 	}
@@ -32,16 +31,14 @@ module.exports = class Users {
 	get(id) {
 		return new Promise((resolve, reject) => {
 			try {
-				this.gestiOS.$http.get(`/users/${id}`).then((response) => {
+				this.gestiOS.$http.get(`/users/${id}`).then((res) => {
 					resolve({
-						ok: true,
-						data: response.data.data[0],
+						...res,
+						data: res.data ? res.data.data[0] : null,
 					});
-				}).catch((error) => {
-					reject(this.gestiOS._error(error));
-				});
+				}).catch((error) => reject(error));
 			} catch (error) {
-				reject(this.gestiOS._error(error));
+				reject(error);
 			}
 		});
 	}
@@ -57,16 +54,14 @@ module.exports = class Users {
 					Phone: phone,
 					Group: group,
 					Key: password,
-				})).then((response) => {
+				})).then((res) => {
 					resolve({
-						ok: true,
-						data: response.data.data,
+						...res,
+						data: res.data ? res.data.data : null,
 					});
-				}).catch((error) => {
-					reject(this.gestiOS._error(error));
-				});
+				}).catch((error) => reject(error));
 			} catch (error) {
-				reject(this.gestiOS._error(error));
+				reject(error);
 			}
 		});
 	}
@@ -82,16 +77,14 @@ module.exports = class Users {
 					Phone: phone,
 					Group: group,
 					Key: password,
-				})).then((response) => {
+				})).then((res) => {
 					resolve({
-						ok: true,
-						data: response.data.data,
+						...res,
+						data: res.data ? res.data.data : null,
 					});
-				}).catch((error) => {
-					reject(this.gestiOS._error(error));
-				});
+				}).catch((error) => reject(error));
 			} catch (error) {
-				reject(this.gestiOS._error(error));
+				reject(error);
 			}
 		});
 	}
@@ -100,15 +93,11 @@ module.exports = class Users {
 	status(id, status) {
 		return new Promise((resolve, reject) => {
 			try {
-				this.gestiOS.$http.post(`users/status/${id}/${status}`).then(() => {
-					resolve({
-						ok: true,
-					});
-				}).catch((error) => {
-					reject(this.gestiOS._error(error));
-				});
+				this.gestiOS.$http.post(`users/status/${id}/${status}`).then((res) => {
+					resolve(res);
+				}).catch((error) => reject(error));
 			} catch (error) {
-				reject(this.gestiOS._error(error));
+				reject(error);
 			}
 		});
 	}
@@ -117,15 +106,11 @@ module.exports = class Users {
 	delete(id) {
 		return new Promise((resolve, reject) => {
 			try {
-				this.gestiOS.$http.delete(`users/${id}`).then(() => {
-					resolve({
-						ok: true,
-					});
-				}).catch((error) => {
-					reject(this.gestiOS._error(error));
-				});
+				this.gestiOS.$http.delete(`users/${id}`).then((res) => {
+					resolve(res);
+				}).catch((error) => reject(error));
 			} catch (error) {
-				reject(this.gestiOS._error(error));
+				reject(error);
 			}
 		});
 	}

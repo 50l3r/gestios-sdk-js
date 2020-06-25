@@ -12,6 +12,7 @@ function GestiOSError(error) {
 	this.code = error.response.status;
 	this.message = null;
 	this.ok = false;
+	this.errors = [];
 
 	if (error.response.data.error !== undefined) {
 		if (this.code === 400) {
@@ -22,32 +23,30 @@ function GestiOSError(error) {
 		}
 	}
 
-	if (error.response.data.error !== undefined) {
-		if (error === null) {
-			switch (this.code) {
-			case 404:
-				this.message = 'No se encontraron resultados';
-				break;
+	if (error.response.data.error === undefined) {
+		switch (this.code) {
+		case 404:
+			this.message = 'No se encontraron resultados';
+			break;
 
-			case 400:
-				this.message = 'No se han recibido los parámetros correctos';
-				break;
+		case 400:
+			this.message = 'No se han recibido los parámetros correctos';
+			break;
 
-			case 500:
-				this.message = 'Ocurrió un error interno. Contacte con soporte';
-				break;
+		case 500:
+			this.message = 'Ocurrió un error interno. Contacte con soporte';
+			break;
 
-			case 401:
-				this.message = 'No está autenticado';
-				break;
+		case 401:
+			this.message = 'No está autenticado';
+			break;
 
-			case 403:
-				this.message = 'Acceso no autorizado al recurso';
-				break;
+		case 403:
+			this.message = 'Acceso no autorizado al recurso';
+			break;
 
-			default:
-				this.message = 'Ocurrió un error desconocido';
-			}
+		default:
+			this.message = 'Ocurrió un error desconocido';
 		}
 	}
 }

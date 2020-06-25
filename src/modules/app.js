@@ -5,7 +5,7 @@ module.exports = class App {
 	}
 
 	// List items
-	list({ page = 1, filters = null, order = null, limit = this.limit } = {}) {
+	list({ page = 1, filters = null, order = null, limit = 20 } = {}) {
 		return new Promise((resolve, reject) => {
 			try {
 				this.gestiOS.$http.get(`/app/${this.slug}`, {
@@ -15,21 +15,20 @@ module.exports = class App {
 						page,
 						limit,
 					},
-				}).then((response) => {
+				}).then((res) => {
 					resolve({
-						ok: true,
-						data: response.data.data,
-						total: response.data.total,
+						...res,
+						data: res.data ? res.data.data : 0,
+						total: res.data ? res.data.total : 0,
 					});
-				}).catch((error) => {
-					reject(this.gestiOS._error(error));
-				});
+				}).catch((error) => reject(error));
 			} catch (error) {
-				reject(this.gestiOS._error(error));
+				reject(error);
 			}
 		});
 	}
 
+	// Get specific item
 	get(id) {
 		return new Promise((resolve, reject) => {
 			try {
@@ -51,16 +50,14 @@ module.exports = class App {
 						page: 1,
 						limit: 1,
 					},
-				}).then((response) => {
+				}).then((res) => {
 					resolve({
-						ok: true,
-						data: response.data.data[0],
+						...res,
+						data: res.data ? res.data.data[0] : undefined,
 					});
-				}).catch((error) => {
-					reject(this.gestiOS._error(error));
-				});
+				}).catch((error) => reject(error));
 			} catch (error) {
-				reject(this.gestiOS._error(error));
+				reject(error);
 			}
 		});
 	}
@@ -82,38 +79,42 @@ module.exports = class App {
 							limit: 100,
 							page,
 						},
-					}).then((response) => {
-						response.data.data.forEach((item) => {
-							data.push(item);
-						});
+					}).then((res) => {
+						if (res.data !== undefined) {
+							res.data.data.forEach((item) => {
+								data.push(item);
+							});
 
-						total = response.data.total;
+							total = res.data.total;
 
-						if (response.data.data.length < 100) {
+							if (res.data.length < 100) {
+								resolve({
+									...res,
+									data,
+									total,
+								});
+							} else {
+								page += 1;
+								list(page);
+							}
+						} else if (data.length > 0) {
 							resolve({
 								ok: true,
+								code: 200,
 								data,
 								total,
 							});
 						} else {
-							page += 1;
-							list(page);
-						}
-					}).catch((error) => {
-						const code = error.response.status;
-
-						if (code === 404) {
 							resolve({
-								ok: true,
-								data,
-								total,
+								ok: false,
+								code: 404,
+								data: [],
+								total: 0,
 							});
-						} else {
-							reject(this.gestiOS._error(error));
 						}
-					});
+					}).catch((error) => reject(error));
 				} catch (error) {
-					reject(this.gestiOS._error(error));
+					reject(error);
 				}
 			};
 
@@ -127,16 +128,14 @@ module.exports = class App {
 			try {
 				if (callback) params.callback_url = callback;
 
-				this.gestiOS.$http.post(`/app/${this.slug}`, new URLSearchParams(params)).then((response) => {
+				this.gestiOS.$http.post(`/app/${this.slug}`, new URLSearchParams(params)).then((res) => {
 					resolve({
-						ok: true,
-						data: response.data.data,
+						...res,
+						data: res.data ? res.data.data : null,
 					});
-				}).catch((error) => {
-					reject(this.gestiOS._error(error));
-				});
+				}).catch((error) => reject(error));
 			} catch (error) {
-				reject(this.gestiOS._error(error));
+				reject(error);
 			}
 		});
 	}
@@ -147,16 +146,14 @@ module.exports = class App {
 			try {
 				if (callback) params.callback_url = callback;
 
-				this.gestiOS.$http.post(`/app/${this.slug}/${id}`, new URLSearchParams(params)).then((response) => {
+				this.gestiOS.$http.post(`/app/${this.slug}/${id}`, new URLSearchParams(params)).then((res) => {
 					resolve({
-						ok: true,
-						data: response.data.data,
+						...res,
+						data: res.data ? res.data.data : null,
 					});
-				}).catch((error) => {
-					reject(this.gestiOS._error(error));
-				});
+				}).catch((error) => reject(error));
 			} catch (error) {
-				reject(this.gestiOS._error(error));
+				reject(error);
 			}
 		});
 	}
@@ -165,15 +162,11 @@ module.exports = class App {
 	status(id) {
 		return new Promise((resolve, reject) => {
 			try {
-				this.gestiOS.$http.post(`app/status/${this.slug}/${id}`).then(() => {
-					resolve({
-						ok: true,
-					});
-				}).catch((error) => {
-					reject(this.gestiOS._error(error));
-				});
+				this.gestiOS.$http.post(`app/status/${this.slug}/${id}`).then((res) => {
+					resolve(res);
+				}).catch((error) => reject(error));
 			} catch (error) {
-				reject(this.gestiOS._error(error));
+				reject(error);
 			}
 		});
 	}
@@ -185,15 +178,13 @@ module.exports = class App {
 				let params = '';
 				if (callback) params = `?callback_url=${callback}`;
 
-				this.gestiOS.$http.delete(`app/${this.slug}/${id}${params}`).then(() => {
-					resolve({
-						ok: true,
-					});
-				}).catch((error) => {
-					reject(this.gestiOS._error(error));
-				});
+				this.gestiOS.$http.delete(`app/${this.slug}/${id}${params}`).then((res) => {
+					if (res.data && res.data.data) delete res.data;
+
+					resolve(res);
+				}).catch((error) => reject(error));
 			} catch (error) {
-				reject(this.gestiOS._error(error));
+				reject(error);
 			}
 		});
 	}
