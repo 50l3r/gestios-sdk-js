@@ -8,7 +8,7 @@ To use the SDK, simply install by npm:
 npm install gestios-sdk-js
 ```
 
-You need to instance the library and execute init method:
+You only need to instance library:
 
 ```
 const GestiOS = require('gestios-sdk-js');
@@ -20,23 +20,28 @@ const gestios = new GestiOS({
 	debug: true|false,
 });
 
-const init = await gestios.init();
+const item = await gestios.app(YOUR_APP_NAME).get(YOUR_ITEM_ID);
 
-if (init) {
-	console.log('It Works');
-}
+console.log(item);
 ```
 
-## Apps
-You can manage app records before instance your app
+# 🗃️ **APPs**
+First, you need to instance your app:
 
 ```
-const myApp = await gestios.app(APPNAME);
+const myApp = await gestios.app(YOUR_APP_NAME);
 ```
 
-### List items
+## **List items**
+You can list all items from specific app:
 
 ```
-const data = await myApp.list();
+const data = await myApp.list({page: 1, limit: 20});
+```
+
+****Get specific item based on ID****
+
+```
+const data = await myApp.get(7465);
 ```
 

@@ -30,6 +30,41 @@ module.exports = class App {
 		});
 	}
 
+	get(id) {
+		return new Promise((resolve, reject) => {
+			try {
+				const filters = [{
+					_ParentOperator: 'OR',
+					_Operator: 'OR',
+					Fields: {
+						_EntityId: {
+							type: 3,
+							int: id,
+							opt: '=',
+						},
+					},
+				}];
+
+				this.gestiOS.$http.get(`/app/${this.slug}`, {
+					params: {
+						filters: filters ? JSON.stringify(filters) : null,
+						page: 1,
+						limit: 1,
+					},
+				}).then((response) => {
+					resolve({
+						ok: true,
+						data: response.data.data[0],
+					});
+				}).catch((error) => {
+					reject(this.gestiOS._error(error));
+				});
+			} catch (error) {
+				reject(this.gestiOS._error(error));
+			}
+		});
+	}
+
 	// Get all items
 	all({ filter = null, order = null } = {}) {
 		return new Promise((resolve, reject) => {
