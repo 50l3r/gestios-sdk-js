@@ -48,11 +48,14 @@ module.exports = class App {
 	}
 
 	// Send email
-	send({ email, subject, message, cc = null, folder = null } = {}) {
+	send({ email, subject, message, cc = [], replyto = '', folder = '' } = {}) {
 		return new Promise((resolve, reject) => {
 			try {
-				this.gestiOS.$http.post('/emails', new URLSearchParams({ email, cc, subject, message, folder })).then(() => {
-					resolve(true);
+				this.gestiOS.$http.post('/emails', new URLSearchParams({ email, cc, subject, message, replyto, folder })).then((res) => {
+					resolve({
+						...res,
+						data: res.data ? res.data.data : null,
+					});
 				}).catch((error) => reject(error));
 			} catch (error) {
 				reject(error);

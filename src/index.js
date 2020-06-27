@@ -5,6 +5,7 @@ const App = require('./modules/app');
 const Config = require('./modules/config');
 const Users = require('./modules/users');
 const Utils = require('./modules/utils');
+const Emails = require('./modules/emails');
 
 // TODO: Restructure modules
 // import helpers from './_helpers';
@@ -15,7 +16,6 @@ const Utils = require('./modules/utils');
 // import media from './_media';
 // import avatars from './_avatars';
 // import comments from './_comments';
-// import emails from './_emails';
 // import notifications from './_notifications';
 
 module.exports = class GestiOS extends Core {
@@ -45,5 +45,6 @@ module.exports = class GestiOS extends Core {
 	_loadModules() {
 		this.config = new Config(this);
 		this.users = new Users(this);
+		this.emails = new Emails(this);
 	}
 };
