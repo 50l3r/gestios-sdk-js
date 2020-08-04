@@ -1,4 +1,3 @@
-
 module.exports = class Users {
 	constructor(api) {
 		this.gestiOS = api;
@@ -70,14 +69,17 @@ module.exports = class Users {
 	edit({ id, email, nick, name, phone = null, group = null, password = null }) {
 		return new Promise((resolve, reject) => {
 			try {
-				this.gestiOS.$http.post(`/users/${id}`, new URLSearchParams({
+				const params = {
 					Email: email,
 					Nick: nick,
 					Name: name,
-					Phone: phone,
-					Group: group,
-					Key: password,
-				})).then((res) => {
+				};
+
+				if (phone !== null) params.Phone = phone;
+				if (group !== null) params.Group = group;
+				if (password !== null) params.Key = password;
+
+				this.gestiOS.$http.post(`/users/${id}`, new URLSearchParams(params)).then((res) => {
 					resolve({
 						...res,
 						data: res.data ? res.data.data : null,
@@ -94,7 +96,10 @@ module.exports = class Users {
 		return new Promise((resolve, reject) => {
 			try {
 				this.gestiOS.$http.post(`users/status/${id}/${status}`).then((res) => {
-					resolve(res);
+					resolve({
+						...res,
+						data: res.data ? res.data.data : null,
+					});
 				}).catch((error) => reject(error));
 			} catch (error) {
 				reject(error);

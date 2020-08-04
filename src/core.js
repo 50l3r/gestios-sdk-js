@@ -2,45 +2,64 @@ const axios = require('axios');
 const { NetworkError, GestiOSError } = require('./errors');
 
 module.exports = class Core {
-	constructor({ project, token, url = 'https://gestios.es', debug = false }) {
-		if (project && token && url) {
-			this.project = project;
-			this.token = token;
-			this.url = url;
-			this.debug = debug;
+	constructor({ project, token, url, debug }) {
+		this._project = project;
+		this._token = token;
+		this._url = url;
+		this.debug = debug;
 
-			this.baseUrl = `${this.url}/api/1/${this.project}/`;
+		this.baseUrl = `${this.url}/api/1/${this.project}/`;
+		this.$http = axios.create();
 
-			this.$http = axios.create({
-				baseURL: `${this.url}/api/1/${this.project}/`,
-			});
+		this._request();
+		this._response();
+	}
 
-			this._request();
-			this._response();
-		} else {
-			throw new Error('No se han definido los parametros necesarios en la configuración de gestiOS');
-		}
+	get project() {
+		return this._project;
+	}
+
+	set project(value) {
+		this._project = value.toLowerCase();
+		this.baseUrl = `${this.url}/api/1/${this.project}/`;
+	}
+
+	get token() {
+		return this._token;
+	}
+
+	set token(value) {
+		this._token = value;
+	}
+
+	get url() {
+		return this._url;
+	}
+
+	set url(value) {
+		this._url = value;
+		this.baseUrl = `${this.url}/api/1/${this.project}/`;
 	}
 
 	_request() {
 		this.$http.interceptors.request.use((config) => {
-			config.headers['X-API-KEY'] = this.token;
-			return config;
-		});
+			if (this.project && this.token && this.url) {
+				config.headers['X-API-KEY'] = this.token;
+				config.baseURL = this.baseUrl;
+
+				return config;
+			}
+			throw new Error('No se han definido los parametros necesarios en la configuración de gestiOS');
+		}, (err) => Promise.reject(err));
 	}
 
 	_response() {
 		this.$http.interceptors.response.use((res) => {
 			const { status, data } = res;
 
-			// if (res.data && res.data.message) msg = res.data.message;
-			// if (res.data && res.data.errors) errs = res.data.errors;
-
 			return {
 				ok: true,
 				code: status,
-				// message: msg,
-				// errors: errs,
 				data,
 			};
 		}, (err) => {

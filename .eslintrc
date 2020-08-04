@@ -1,0 +1,32 @@
+{
+	"extends": ["airbnb-base"],
+	"env": {
+		"node": true,
+		"browser": true,
+		"es6": true
+	},
+	"globals": {
+		"store": true
+	},
+	"parserOptions": {
+		"ecmaVersion": 2020,
+		"parser": "babel-eslint"
+	},
+	"rules": {
+		"no-console": [1, { "allow": ["warn","error"]}],
+		"no-param-reassign": 0,
+		"global-require": 0,
+		"object-curly-newline": 0,
+		"indent": [
+			"error",
+			"tab"
+		],
+		"no-tabs": 0,
+		"no-underscore-dangle": 0,
+		"semi": [
+			2,
+			"always"
+		],
+		"max-len": 0
+	}
+}

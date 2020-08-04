@@ -1,6 +1,6 @@
 {
 	"name": "gestios-sdk-js",
-	"version": "0.2.26",
+	"version": "0.3.0",
 	"description": "GestiOS Javascript SDK",
 	"main": "index.js",
 	"scripts": {
@@ -11,9 +11,10 @@
 	"author": "50l3r",
 	"license": "ISC",
 	"devDependencies": {
+		"babel-eslint": "^10.1.0",
 		"eslint": "^6.8.0",
-		"eslint-config-airbnb-base": "^14.0.0",
-		"eslint-plugin-import": "^2.20.1"
+		"eslint-config-airbnb-base": "^14.2.0",
+		"eslint-plugin-import": "^2.22.0"
 	},
 	"dependencies": {
 		"axios": "^0.19.2"

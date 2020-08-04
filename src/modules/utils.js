@@ -1,42 +1,42 @@
-module.exports = class Users {
+module.exports = class Utils {
 	constructor(api, app) {
 		this.gestiOS = api;
 		this.app = app;
 	}
 
 	// Prepare & clean field params
-	cleanFields(params) {
-		try {
-			const FinalParams = {};
+	// cleanFields(params) {
+	// 	try {
+	// 		const FinalParams = {};
 
-			Object.keys(params).forEach((key) => {
-				if (key.substr(0, 1) !== '_') { // Only custom fields
-					if (this.app.Fields[key]) {
-						// Si es un campo de app se procesa
-						if (params[key] || params[key] === 0 || this.app.Fields[key].Type === 'text' || this.app.Fields[key].Type === 'image') {
-							if (this.app.Fields[key].Type === 'relation' && typeof params[key] === 'object') {
-								if (params[key]._EntityId > 0) {
-									FinalParams[key] = params[key]._EntityId;
-								}
-							} else if (this.app.Fields[key].Type === 'relation' && (params[key] === '' || params[key] === 0)) {
-								FinalParams[key] = null;
-							} else if ((this.app.Fields[key].Type !== 'relation' || params[key] !== 0) && params[key] != null) {
-								FinalParams[key] = params[key];
-							}
-						}
-					} else if (params[key] != null) {
-						// Si es un campo ajeno se agrega
-						FinalParams[key] = params[key];
-					}
-				}
-			});
+	// 		Object.keys(params).forEach((key) => {
+	// 			if (key.substr(0, 1) !== '_') { // Only custom fields
+	// 				if (this.app.Fields[key]) {
+	// 					// Si es un campo de app se procesa
+	// 					if (params[key] || params[key] === 0 || this.app.Fields[key].Type === 'text' || this.app.Fields[key].Type === 'image') {
+	// 						if (this.app.Fields[key].Type === 'relation' && typeof params[key] === 'object') {
+	// 							if (params[key]._EntityId > 0) {
+	// 								FinalParams[key] = params[key]._EntityId;
+	// 							}
+	// 						} else if (this.app.Fields[key].Type === 'relation' && (params[key] === '' || params[key] === 0)) {
+	// 							FinalParams[key] = null;
+	// 						} else if ((this.app.Fields[key].Type !== 'relation' || params[key] !== 0) && params[key] != null) {
+	// 							FinalParams[key] = params[key];
+	// 						}
+	// 					}
+	// 				} else if (params[key] != null) {
+	// 					// Si es un campo ajeno se agrega
+	// 					FinalParams[key] = params[key];
+	// 				}
+	// 			}
+	// 		});
 
-			return FinalParams;
-		} catch (err) {
-			if (this.gestiOS.debug) console.error(err);
-			return false;
-		}
-	}
+	// 		return FinalParams;
+	// 	} catch (err) {
+	// 		if (this.gestiOS.debug) console.error(err);
+	// 		return false;
+	// 	}
+	// }
 
 	// Generate app filter for search
 	filter(value, parent = 'OR') {
@@ -71,7 +71,7 @@ module.exports = class Users {
 	}
 
 	// Get value of select field
-	getSelectValue(field, value) {
+	getValue(field, value) {
 		try {
 			if (typeof this.app.Fields[field] !== 'undefined') {
 				const vars = JSON.parse(this.app.Fields[field].Vars);
@@ -88,10 +88,10 @@ module.exports = class Users {
 				if (name) return name;
 			}
 
-			return false;
+			return '';
 		} catch (err) {
 			if (this.gestiOS.debug) console.error(err);
-			return false;
+			return '';
 		}
 	}
 };
