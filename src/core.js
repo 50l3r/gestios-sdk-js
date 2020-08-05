@@ -43,8 +43,8 @@ module.exports = class Core {
 
 	_request() {
 		this.$http.interceptors.request.use((config) => {
-			if (this.project && this.token && this.url) {
-				config.headers['X-API-KEY'] = this.token;
+			if (this.project && this.url) {
+				if (this.token) config.headers['X-API-KEY'] = this.token;
 				config.baseURL = this.baseUrl;
 
 				return config;

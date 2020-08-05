@@ -10,7 +10,7 @@ module.exports = class Auth {
 				this.gestiOS.$http.post('/auth/login', new URLSearchParams({ username, password })).then((res) => {
 					resolve({
 						...res,
-						data: res.data ? res.data.data : null,
+						data: res.data || null,
 					});
 				}).catch((error) => reject(error));
 			} catch (error) {
