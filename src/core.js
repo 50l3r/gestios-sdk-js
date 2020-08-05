@@ -41,15 +41,31 @@ module.exports = class Core {
 		this.baseUrl = `${this.url}/api/1/${this.project}/`;
 	}
 
+	projects(project) {
+		return new Promise((resolve, reject) => {
+			try {
+				this.$http.get(`${this.url}/api/1/${project}`).then((res) => {
+					resolve({
+						...res,
+						data: res.data ? res.data.data : undefined,
+					});
+				}).catch((error) => reject(error));
+			} catch (error) {
+				reject(error);
+			}
+		});
+	}
+
 	_request() {
 		this.$http.interceptors.request.use((config) => {
-			if (this.project && this.url) {
+			if (this.url) {
 				if (this.token) config.headers['X-API-KEY'] = this.token;
 				config.baseURL = this.baseUrl;
 
 				return config;
 			}
-			throw new Error('No se han definido los parametros necesarios en la configuración de gestiOS');
+
+			throw new Error('No se ha definido una url válida en la configuración de gestiOS');
 		}, (err) => Promise.reject(err));
 	}
 
