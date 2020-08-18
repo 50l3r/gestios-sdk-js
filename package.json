@@ -1,6 +1,6 @@
 {
 	"name": "gestios-sdk-js",
-	"version": "0.3.3",
+	"version": "0.3.4",
 	"description": "GestiOS Javascript SDK",
 	"main": "index.js",
 	"scripts": {
@@ -17,6 +17,7 @@
 		"eslint-plugin-import": "^2.22.0"
 	},
 	"dependencies": {
-		"axios": "^0.19.2"
+		"axios": "^0.19.2",
+		"form-data": "^3.0.0"
 	}
 }

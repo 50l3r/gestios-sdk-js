@@ -1,3 +1,5 @@
+const FormData = require('form-data');
+
 module.exports = class Media {
 	constructor(api) {
 		this.gestiOS = api;
@@ -36,17 +38,17 @@ module.exports = class Media {
 	}
 
 	// Add file
-	add({ file, folder = '' }) {
+	add({ file, name, folder = '' }) {
 		return new Promise((resolve, reject) => {
 			try {
 				const formData = new FormData();
 
-				formData.append('file', file);
+				formData.append('file', file, name);
 				if (folder) formData.append('folder', folder);
 
 				this.gestiOS.$http.post('media', formData, {
 					headers: {
-						'Content-Type': 'multipart/form-data',
+						...formData.getHeaders(),
 					},
 				}).then((res) => {
 					resolve({
