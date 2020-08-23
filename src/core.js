@@ -21,7 +21,7 @@ module.exports = class Core {
 
 	set project(value) {
 		this._project = value.toLowerCase();
-		this.baseUrl = `${this.url}/api/1/${this.project}/`;
+		this.baseUrl = `${this.url}/${this.project}/`;
 	}
 
 	get token() {
@@ -38,13 +38,18 @@ module.exports = class Core {
 
 	set url(value) {
 		this._url = value;
-		this.baseUrl = `${this.url}/api/1/${this.project}/`;
+
+		if (this.project) {
+			this.baseUrl = `${this.url}/`;
+		} else {
+			this.baseUrl = `${this.url}/${this.project}/`;
+		}
 	}
 
 	projects(project) {
 		return new Promise((resolve, reject) => {
 			try {
-				this.$http.get(`${this.url}/api/1/${project}`).then((res) => {
+				this.$http.get(`${this.url}/${project}`).then((res) => {
 					resolve({
 						...res,
 						data: res.data ? res.data.data : undefined,
