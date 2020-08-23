@@ -8,7 +8,7 @@ module.exports = class Core {
 		this._url = url;
 		this.debug = debug;
 
-		this.baseUrl = `${this.url}/api/1/${this.project}/`;
+		this.baseUrl = `${this.url}/${this.project}/`;
 		this.$http = axios.create();
 
 		this._request();
@@ -40,9 +40,9 @@ module.exports = class Core {
 		this._url = value;
 
 		if (this.project) {
-			this.baseUrl = `${this.url}/`;
-		} else {
 			this.baseUrl = `${this.url}/${this.project}/`;
+		} else {
+			this.baseUrl = `${this.url}/`;
 		}
 	}
 
