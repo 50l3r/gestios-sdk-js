@@ -40,4 +40,16 @@ module.exports = class Config {
 			}
 		});
 	}
+
+	delete(keys) {
+		return new Promise((resolve, reject) => {
+			try {
+				this.gestiOS.$http.delete(`/config?keys=${keys}`).then((res) => {
+					resolve(res);
+				}).catch((error) => reject(error));
+			} catch (error) {
+				reject(error);
+			}
+		});
+	}
 };
