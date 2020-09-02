@@ -26,7 +26,6 @@ module.exports = class GestiOS extends Core {
 	apps() {
 		return new Promise((resolve, reject) => {
 			this.$http.get('apps').then((response) => {
-				this.apps = response.data;
 				resolve(response.data);
 			}).catch((error) => reject(error));
 		});
