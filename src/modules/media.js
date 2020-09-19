@@ -46,11 +46,7 @@ module.exports = class Media {
 				formData.append('file', file, name);
 				if (folder) formData.append('folder', folder);
 
-				this.gestiOS.$http.post('media', formData, {
-					headers: {
-						...formData.getHeaders(),
-					},
-				}).then((res) => {
+				this.gestiOS.$http.post('media', formData).then((res) => {
 					resolve({
 						...res,
 						data: res.data ? res.data.data : null,
