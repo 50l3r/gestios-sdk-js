@@ -7,10 +7,10 @@ module.exports = class Profile {
 	get() {
 		return new Promise((resolve, reject) => {
 			try {
-				this.gestiOS.$http.get(`/profile/me`).then((res) => {
+				this.gestiOS.$http.get('/profile/me').then((res) => {
 					resolve({
 						...res,
-						data: res.data ? res.data.data[0] : null,
+						data: res.data ? res.data : null,
 					});
 				}).catch((error) => reject(error));
 			} catch (error) {

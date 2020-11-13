@@ -90,7 +90,7 @@ module.exports = class Core {
 			const gErr = new GestiOSError(err);
 
 			switch (gErr.code) {
-			case 404: case 400:
+			case 404: case 400: case 401: case 500:
 				return {
 					ok: gErr.ok,
 					code: gErr.code,
