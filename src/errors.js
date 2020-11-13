@@ -1,7 +1,7 @@
 // Create a new object, that prototypically inherits from the Error constructor
 function NetworkError(error) {
 	this.name = 'NetworkError';
-	this.code = 0;
+	this.code = 503;
 	this.ok = false;
 	this.message = error || 'No es posible acceder a los servicios de GestiOS';
 	this.stack = new Error().stack;
