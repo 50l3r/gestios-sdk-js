@@ -10,6 +10,7 @@ const Auth = require('./modules/auth');
 const Groups = require('./modules/groups');
 const Roles = require('./modules/roles');
 const Media = require('./modules/media');
+const Profile = require('./modules/profile');
 
 // TODO: Restructure modules
 // import avatars from './_avatars';
@@ -47,5 +48,6 @@ module.exports = class GestiOS extends Core {
 		this.roles = new Roles(this);
 		this.groups = new Groups(this);
 		this.media = new Media(this);
+		this.profile = new Profile(this);
 	}
 };
