@@ -63,7 +63,7 @@ module.exports = class App {
 	}
 
 	// Get all items
-	all({ filter = null, order = null } = {}) {
+	all({ filters = null, order = null } = {}) {
 		return new Promise((resolve, reject) => {
 			let page = 1;
 			let total = 0;
@@ -74,7 +74,7 @@ module.exports = class App {
 					// eslint-disable-next-line no-await-in-loop
 					this.gestiOS.$http.get(`app/${this.slug}`, {
 						params: {
-							filters: filter ? JSON.stringify(filter) : null,
+							filters: filters ? JSON.stringify(filters) : null,
 							order: order ? JSON.stringify(order) : null,
 							limit: 100,
 							page,
