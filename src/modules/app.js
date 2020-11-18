@@ -63,7 +63,7 @@ module.exports = class App {
 	}
 
 	// Get all items
-	all({ filters = null, order = null } = {}) {
+	all({ filters = null, order = null, limit = 100 } = {}) {
 		return new Promise((resolve, reject) => {
 			let page = 1;
 			let total = 0;
@@ -76,7 +76,7 @@ module.exports = class App {
 						params: {
 							filters: filters ? JSON.stringify(filters) : null,
 							order: order ? JSON.stringify(order) : null,
-							limit: 100,
+							limit,
 							page,
 						},
 					}).then((res) => {
@@ -87,7 +87,7 @@ module.exports = class App {
 
 							total = res.data.total;
 
-							if (res.data.length < 100) {
+							if (res.data.length < limit) {
 								resolve({
 									...res,
 									data,
