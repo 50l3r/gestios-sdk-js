@@ -36,10 +36,6 @@ module.exports = class GestiOS extends Core {
 		return new App(this, slug);
 	}
 
-	utils(app) {
-		return new Utils(this, app);
-	}
-
 	_loadModules() {
 		this.config = new Config(this);
 		this.users = new Users(this);
@@ -49,5 +45,6 @@ module.exports = class GestiOS extends Core {
 		this.groups = new Groups(this);
 		this.media = new Media(this);
 		this.profile = new Profile(this);
+		this.utils = new Utils(this);
 	}
 };
