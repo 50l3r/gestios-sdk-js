@@ -36,6 +36,17 @@ module.exports = class GestiOS extends Core {
 		return new App(this, slug);
 	}
 
+	utils() {
+		return new Promise((resolve, reject) => {
+			this.apps().then((apps) => {
+				resolve(new Utils(this, apps));
+			}).catch((err) => {
+				if (this.gestiOS.debug) console.error(err);
+				reject(new Error('No se pudo obtener las aplicaciones del proyecto'));
+			});
+		});
+	}
+
 	_loadModules() {
 		this.config = new Config(this);
 		this.users = new Users(this);
@@ -45,6 +56,5 @@ module.exports = class GestiOS extends Core {
 		this.groups = new Groups(this);
 		this.media = new Media(this);
 		this.profile = new Profile(this);
-		this.utils = new Utils(this);
 	}
 };

@@ -1,6 +1,6 @@
 {
 	"name": "gestios-sdk-js",
-	"version": "0.6.0",
+	"version": "0.7.0",
 	"description": "GestiOS Javascript SDK",
 	"main": "index.js",
 	"scripts": {
