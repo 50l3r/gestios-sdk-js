@@ -1,5 +1,12 @@
 const FormData = require('form-data');
 
+let isNode;
+if (typeof window === 'undefined') {
+	isNode = true;
+} else {
+	isNode = false;
+}
+
 module.exports = class Media {
 	constructor(api) {
 		this.gestiOS = api;
@@ -42,12 +49,12 @@ module.exports = class Media {
 		return new Promise((resolve, reject) => {
 			try {
 				const formData = new FormData();
-
+				console.log(formData);
 				formData.append('file', file, name);
 				if (folder) formData.append('folder', folder);
 
 				this.gestiOS.$http.post('media', formData, {
-					headers: formData.getHeaders(),
+					headers: isNode ? formData.getHeaders() : {},
 				}).then((res) => {
 					resolve({
 						...res,
