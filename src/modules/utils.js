@@ -16,9 +16,9 @@ module.exports = class Utils {
 					Fields: {},
 				};
 
-				Object.keys(this.app.Fields).forEach((i) => {
-					if (this.app.Fields[i].Searchable) {
-						Filter.Fields[this.app.Fields[i].Name] = {
+				Object.keys(app.Fields).forEach((i) => {
+					if (app.Fields[i].Searchable) {
+						Filter.Fields[app.Fields[i].Name] = {
 							type: 4,
 							string: value,
 							opt: '%',
@@ -45,6 +45,8 @@ module.exports = class Utils {
 	// Get value of select field
 	getValue(appName, field, value) {
 		try {
+			if ((!value && value !== 0) || field === null) return '';
+
 			const app = this.apps.find((a) => a.Permalink === appName);
 
 			if (app) {
@@ -53,8 +55,10 @@ module.exports = class Utils {
 					let name = '';
 
 					value = parseInt(value, 10);
+
 					vars.forEach((option) => {
 						const id = parseInt(option.id, 10);
+
 						if (value === id) {
 							({ name } = option);
 						}
@@ -63,13 +67,12 @@ module.exports = class Utils {
 					if (name) return name;
 				}
 
-				if (this.gestiOS.debug) console.error('El campo o valor no existe');
-				return '';
+				throw new Error('El campo o valor no existe');
 			}
 
-			if (this.gestiOS.debug) console.error('No se encontró la aplicación o no tienes acceso a ella');
-			return '';
+			throw new Error('No se encontró la aplicación o no tienes acceso a ella');
 		} catch (error) {
+			if (this.gestiOS.debug) console.error(error);
 			return '';
 		}
 	}
