@@ -16,7 +16,7 @@ module.exports = class Media {
 	list({ page = 1, search = null, order = null, limit = 20, folder = null, type = null } = {}) {
 		return new Promise((resolve, reject) => {
 			try {
-				this.gestiOS.$http.get('/emails', {
+				this.gestiOS.$http.get('/media', {
 					params: {
 						search: search || null,
 						folder: folder || null,
