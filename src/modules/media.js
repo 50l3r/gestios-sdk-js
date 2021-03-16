@@ -12,6 +12,32 @@ module.exports = class Media {
 		this.gestiOS = api;
 	}
 
+	// List files
+	list({ page = 1, search = null, order = null, limit = 20, folder = null, type = null } = {}) {
+		return new Promise((resolve, reject) => {
+			try {
+				this.gestiOS.$http.get('/emails', {
+					params: {
+						search: search || null,
+						folder: folder || null,
+						type: type || null,
+						order: order ? JSON.stringify(order) : null,
+						page,
+						limit,
+					},
+				}).then((res) => {
+					resolve({
+						...res,
+						data: res.data ? res.data.data : 0,
+						total: res.data ? res.data.total : 0,
+					});
+				}).catch((error) => reject(error));
+			} catch (error) {
+				reject(error);
+			}
+		});
+	}
+
 	// Get file
 	get(id) {
 		return new Promise((resolve, reject) => {
