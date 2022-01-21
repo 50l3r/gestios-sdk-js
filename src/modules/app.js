@@ -8,20 +8,23 @@ module.exports = class App {
 	list({ page = 1, filters = null, order = null, limit = 20 } = {}) {
 		return new Promise((resolve, reject) => {
 			try {
-				this.gestiOS.$http.get(`/app/${this.slug}`, {
-					params: {
-						filters: filters ? JSON.stringify(filters) : null,
-						order: order ? JSON.stringify(order) : null,
-						page,
-						limit,
-					},
-				}).then((res) => {
-					resolve({
-						...res,
-						data: res.data ? res.data.data : 0,
-						total: res.data ? res.data.total : 0,
-					});
-				}).catch((error) => reject(error));
+				this.gestiOS.$http
+					.get(`/app/${this.slug}`, {
+						params: {
+							filters: filters ? JSON.stringify(filters) : null,
+							order: order ? JSON.stringify(order) : null,
+							page,
+							limit,
+						},
+					})
+					.then((res) => {
+						resolve({
+							...res,
+							data: res.data ? res.data.data : 0,
+							total: res.data ? res.data.total : 0,
+						});
+					})
+					.catch((error) => reject(error));
 			} catch (error) {
 				reject(error);
 			}
@@ -32,30 +35,35 @@ module.exports = class App {
 	get(id) {
 		return new Promise((resolve, reject) => {
 			try {
-				const filters = [{
-					_ParentOperator: 'OR',
-					_Operator: 'OR',
-					Fields: {
-						_EntityId: {
-							type: 3,
-							int: id,
-							opt: '=',
+				const filters = [
+					{
+						_ParentOperator: 'OR',
+						_Operator: 'OR',
+						Fields: {
+							_EntityId: {
+								type: 3,
+								int: id,
+								opt: '=',
+							},
 						},
 					},
-				}];
+				];
 
-				this.gestiOS.$http.get(`/app/${this.slug}`, {
-					params: {
-						filters: filters ? JSON.stringify(filters) : null,
-						page: 1,
-						limit: 1,
-					},
-				}).then((res) => {
-					resolve({
-						...res,
-						data: res.data ? res.data.data[0] : undefined,
-					});
-				}).catch((error) => reject(error));
+				this.gestiOS.$http
+					.get(`/app/${this.slug}`, {
+						params: {
+							filters: filters ? JSON.stringify(filters) : null,
+							page: 1,
+							limit: 1,
+						},
+					})
+					.then((res) => {
+						resolve({
+							...res,
+							data: res.data ? res.data.data[0] : undefined,
+						});
+					})
+					.catch((error) => reject(error));
 			} catch (error) {
 				reject(error);
 			}
@@ -72,47 +80,52 @@ module.exports = class App {
 			const list = () => {
 				try {
 					// eslint-disable-next-line no-await-in-loop
-					this.gestiOS.$http.get(`app/${this.slug}`, {
-						params: {
-							filters: filters ? JSON.stringify(filters) : null,
-							order: order ? JSON.stringify(order) : null,
-							limit,
-							page,
-						},
-					}).then((res) => {
-						if (res.data !== undefined) {
-							res.data.data.forEach((item) => {
-								data.push(item);
-							});
+					this.gestiOS.$http
+						.get(`app/${this.slug}`, {
+							params: {
+								filters: filters
+									? JSON.stringify(filters)
+									: null,
+								order: order ? JSON.stringify(order) : null,
+								limit,
+								page,
+							},
+						})
+						.then((res) => {
+							if (res.data !== undefined) {
+								res.data.data.forEach((item) => {
+									data.push(item);
+								});
 
-							total = res.data.total;
+								total = res.data.total;
 
-							if (res.data.length < limit) {
+								if (res.data.length < limit) {
+									resolve({
+										...res,
+										data,
+										total,
+									});
+								} else {
+									page += 1;
+									list(page);
+								}
+							} else if (data.length > 0) {
 								resolve({
-									...res,
+									ok: true,
+									code: 200,
 									data,
 									total,
 								});
 							} else {
-								page += 1;
-								list(page);
+								resolve({
+									ok: false,
+									code: 404,
+									data: [],
+									total: 0,
+								});
 							}
-						} else if (data.length > 0) {
-							resolve({
-								ok: true,
-								code: 200,
-								data,
-								total,
-							});
-						} else {
-							resolve({
-								ok: false,
-								code: 404,
-								data: [],
-								total: 0,
-							});
-						}
-					}).catch((error) => reject(error));
+						})
+						.catch((error) => reject(error));
 				} catch (error) {
 					reject(error);
 				}
@@ -128,12 +141,15 @@ module.exports = class App {
 			try {
 				if (callback) params.callback_url = callback;
 
-				this.gestiOS.$http.post(`/app/${this.slug}`, new URLSearchParams(params)).then((res) => {
-					resolve({
-						...res,
-						data: res.data ? res.data.data : null,
-					});
-				}).catch((error) => reject(error));
+				this.gestiOS.$http
+					.post(`/app/${this.slug}`, new URLSearchParams(params))
+					.then((res) => {
+						resolve({
+							...res,
+							data: res.data ? res.data.data : null,
+						});
+					})
+					.catch((error) => reject(error));
 			} catch (error) {
 				reject(error);
 			}
@@ -146,12 +162,18 @@ module.exports = class App {
 			try {
 				if (callback) params.callback_url = callback;
 
-				this.gestiOS.$http.post(`/app/${this.slug}/${id}`, new URLSearchParams(params)).then((res) => {
-					resolve({
-						...res,
-						data: res.data ? res.data.data : null,
-					});
-				}).catch((error) => reject(error));
+				this.gestiOS.$http
+					.post(
+						`/app/${this.slug}/${id}`,
+						new URLSearchParams(params),
+					)
+					.then((res) => {
+						resolve({
+							...res,
+							data: res.data ? res.data.data : null,
+						});
+					})
+					.catch((error) => reject(error));
 			} catch (error) {
 				reject(error);
 			}
@@ -162,12 +184,15 @@ module.exports = class App {
 	status(id) {
 		return new Promise((resolve, reject) => {
 			try {
-				this.gestiOS.$http.post(`app/status/${this.slug}/${id}`).then((res) => {
-					resolve({
-						...res,
-						data: res.data ? res.data.data : null,
-					});
-				}).catch((error) => reject(error));
+				this.gestiOS.$http
+					.post(`app/status/${this.slug}/${id}`)
+					.then((res) => {
+						resolve({
+							...res,
+							data: res.data ? res.data.data : null,
+						});
+					})
+					.catch((error) => reject(error));
 			} catch (error) {
 				reject(error);
 			}
@@ -181,11 +206,14 @@ module.exports = class App {
 				let params = '';
 				if (callback) params = `?callback_url=${callback}`;
 
-				this.gestiOS.$http.delete(`app/${this.slug}/${id}${params}`).then((res) => {
-					if (res.data && res.data.data) delete res.data;
+				this.gestiOS.$http
+					.delete(`app/${this.slug}/${id}${params}`)
+					.then((res) => {
+						if (res.data && res.data.data) delete res.data;
 
-					resolve(res);
-				}).catch((error) => reject(error));
+						resolve(res);
+					})
+					.catch((error) => reject(error));
 			} catch (error) {
 				reject(error);
 			}
@@ -201,7 +229,7 @@ module.exports = class App {
 
 		scopes.forEach((scope) => {
 			const dp = scope.split('.');
-			if (dp.length < 3 && dp[dp.length - 1] !== this.slug) scope += `.${this.slug}`;
+			if (dp.length < 3 && dp[dp.length - 1] !== this.slug) { scope += `.${this.slug}`; }
 
 			user.Roles.Readable.forEach((role) => {
 				if (scope === role) {
@@ -219,15 +247,12 @@ module.exports = class App {
 				break;
 
 			case `view.${this.slug}`: // Ver todos (view.)
-
 				break;
 
 			case `add.mod.${this.slug}`: // Ver Añadir en moderacion (add.mod.)
-
 				break;
 
 			case `add.${this.slug}`: // Ver Añadir (add.)
-
 				break;
 
 			case `set.mine.${this.slug}`: // Editar propios (set.mine.)
@@ -239,7 +264,6 @@ module.exports = class App {
 				break;
 
 			case `set.${this.slug}`: // Editar todos (set.)
-
 				break;
 
 			case `del.mine.${this.slug}`: // Eliminar propios (del.mine.)
@@ -251,30 +275,61 @@ module.exports = class App {
 				break;
 
 			case `del.${this.slug}`: // Eliminar todos (del.)
-
 				break;
 
 			case `lock.${this.slug}`: // Cambiar estado (del.)
-
 				break;
 
 			case `comment.${this.slug}`: // Comentar (comment.)
-
 				break;
 
 			case `moderate.${this.slug}`: // Moderar comentarios (moderate.)
-
 				break;
 
 			case `uncomment.mine.${this.slug}`: // Eliminar comentarios (moderate.)
-
 				break;
 			default:
 			}
 
-			if ((strict && scopeCount >= scopes.length) || (!strict && scopeCount > 0)) pass = true;
+			if (
+				(strict && scopeCount >= scopes.length)
+				|| (!strict && scopeCount > 0)
+			) { pass = true; }
 		});
 
 		return pass;
+	}
+
+	// Export items
+	export({
+		fields,
+		page = 1,
+		filters = null,
+		order = null,
+		limit = 20,
+	} = {}) {
+		return new Promise((resolve, reject) => {
+			try {
+				this.gestiOS.$http
+					.get(`/export/${this.slug}`, {
+						params: {
+							fields: fields ? JSON.stringify(fields) : null,
+							filters: filters ? JSON.stringify(filters) : null,
+							order: order ? JSON.stringify(order) : null,
+							page,
+							limit,
+						},
+					})
+					.then((res) => {
+						resolve({
+							...res,
+							data: res.data ? res.data.data : null,
+						});
+					})
+					.catch((error) => reject(error));
+			} catch (error) {
+				reject(error);
+			}
+		});
 	}
 };
