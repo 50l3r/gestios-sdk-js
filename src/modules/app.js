@@ -332,4 +332,78 @@ module.exports = class App {
 			}
 		});
 	}
+
+	comments(entityId = null) {
+		const self = this;
+
+		return {
+			async list(page = 1) {
+				return new Promise((resolve, reject) => {
+					try {
+						if(entityId){
+							const params = {
+								page: page,
+							};
+
+							self.gestiOS.$http
+								.get(`/comments/${self.slug}/${entityId}`, params)
+								.then((res) => {
+									resolve({
+										...res,
+										data: res.data ? res.data.data : null,
+									});
+								})
+								.catch((error) => reject(error));
+						}else{
+							reject(new Error('entityId is required'));
+						}
+					} catch (error) {
+						reject(error);
+					}
+				});
+			},
+
+			async add(message) {
+				return new Promise((resolve, reject) => {
+					try {
+						if(entityId){
+							const params = {
+								text: message,
+							};
+
+							self.gestiOS.$http
+								.post(`/comments/${self.slug}/${entityId}`, new URLSearchParams(params))
+								.then((res) => {
+									resolve({
+										...res,
+										data: res.data ? res.data.data : null,
+									});
+								})
+								.catch((error) => reject(error));
+						}else{
+							reject(new Error('entityId is required'));
+						}
+					} catch (error) {
+						reject(error);
+					}
+				});
+			},
+
+			// ELIMINAR COMENTARIO
+			async delete(id) {
+				return new Promise((resolve, reject) => {
+					try {
+						self.gestiOS.$http
+							.delete(`comments/${id}`)
+							.then(() => {
+								resolve(true);
+							})
+							.catch((error) => reject(error));
+					} catch (error) {
+						reject(error);
+					}
+				});
+			},
+		};
+	}
 };
