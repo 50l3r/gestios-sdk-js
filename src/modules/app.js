@@ -37,13 +37,13 @@ module.exports = class App {
 			try {
 				const filters = [
 					{
-						_ParentOperator: 'OR',
-						_Operator: 'OR',
+						_ParentOperator: "OR",
+						_Operator: "OR",
 						Fields: {
 							_EntityId: {
 								type: 3,
 								int: id,
-								opt: '=',
+								opt: "=",
 							},
 						},
 					},
@@ -71,7 +71,7 @@ module.exports = class App {
 	}
 
 	// Get all items
-	all({ filters = null, order = null, limit = 100 } = {}) {
+	all({ filters = null, order = null, limit = 10000 } = {}) {
 		return new Promise((resolve, reject) => {
 			let page = 1;
 			let total = 0;
@@ -165,7 +165,7 @@ module.exports = class App {
 				this.gestiOS.$http
 					.post(
 						`/app/${this.slug}/${id}`,
-						new URLSearchParams(params),
+						new URLSearchParams(params)
 					)
 					.then((res) => {
 						resolve({
@@ -203,7 +203,7 @@ module.exports = class App {
 	delete(id, callback = null) {
 		return new Promise((resolve, reject) => {
 			try {
-				let params = '';
+				let params = "";
 				if (callback) params = `?callback_url=${callback}`;
 
 				this.gestiOS.$http
@@ -225,11 +225,13 @@ module.exports = class App {
 		let scopeCount = 0;
 		let pass = false;
 
-		if (user.BOSS === '1' || scopes.length === 0) return true;
+		if (user.BOSS === "1" || scopes.length === 0) return true;
 
 		scopes.forEach((scope) => {
-			const dp = scope.split('.');
-			if (dp.length < 3 && dp[dp.length - 1] !== this.slug) { scope += `.${this.slug}`; }
+			const dp = scope.split(".");
+			if (dp.length < 3 && dp[dp.length - 1] !== this.slug) {
+				scope += `.${this.slug}`;
+			}
 
 			user.Roles.Readable.forEach((role) => {
 				if (scope === role) {
@@ -238,63 +240,65 @@ module.exports = class App {
 			});
 
 			switch (scope) {
-			case `view.mine.${this.slug}`: // Ver propios (view.mine.)
-				if (item._EntityCreateUser) {
-					if (item._EntityCreateUser.ID !== user.ID) {
-						scopeCount -= 1;
+				case `view.mine.${this.slug}`: // Ver propios (view.mine.)
+					if (item._EntityCreateUser) {
+						if (item._EntityCreateUser.ID !== user.ID) {
+							scopeCount -= 1;
+						}
 					}
-				}
-				break;
+					break;
 
-			case `view.${this.slug}`: // Ver todos (view.)
-				break;
+				case `view.${this.slug}`: // Ver todos (view.)
+					break;
 
-			case `add.mod.${this.slug}`: // Ver Añadir en moderacion (add.mod.)
-				break;
+				case `add.mod.${this.slug}`: // Ver Añadir en moderacion (add.mod.)
+					break;
 
-			case `add.${this.slug}`: // Ver Añadir (add.)
-				break;
+				case `add.${this.slug}`: // Ver Añadir (add.)
+					break;
 
-			case `set.mine.${this.slug}`: // Editar propios (set.mine.)
-				if (item._EntityCreateUser) {
-					if (item._EntityCreateUser.ID.toString() !== user.ID) {
-						scopeCount -= 1;
+				case `set.mine.${this.slug}`: // Editar propios (set.mine.)
+					if (item._EntityCreateUser) {
+						if (item._EntityCreateUser.ID.toString() !== user.ID) {
+							scopeCount -= 1;
+						}
 					}
-				}
-				break;
+					break;
 
-			case `set.${this.slug}`: // Editar todos (set.)
-				break;
+				case `set.${this.slug}`: // Editar todos (set.)
+					break;
 
-			case `del.mine.${this.slug}`: // Eliminar propios (del.mine.)
-				if (item._EntityCreateUser) {
-					if (item._EntityCreateUser.ID.toString() !== user.ID) {
-						scopeCount -= 1;
+				case `del.mine.${this.slug}`: // Eliminar propios (del.mine.)
+					if (item._EntityCreateUser) {
+						if (item._EntityCreateUser.ID.toString() !== user.ID) {
+							scopeCount -= 1;
+						}
 					}
-				}
-				break;
+					break;
 
-			case `del.${this.slug}`: // Eliminar todos (del.)
-				break;
+				case `del.${this.slug}`: // Eliminar todos (del.)
+					break;
 
-			case `lock.${this.slug}`: // Cambiar estado (del.)
-				break;
+				case `lock.${this.slug}`: // Cambiar estado (del.)
+					break;
 
-			case `comment.${this.slug}`: // Comentar (comment.)
-				break;
+				case `comment.${this.slug}`: // Comentar (comment.)
+					break;
 
-			case `moderate.${this.slug}`: // Moderar comentarios (moderate.)
-				break;
+				case `moderate.${this.slug}`: // Moderar comentarios (moderate.)
+					break;
 
-			case `uncomment.mine.${this.slug}`: // Eliminar comentarios (moderate.)
-				break;
-			default:
+				case `uncomment.mine.${this.slug}`: // Eliminar comentarios (moderate.)
+					break;
+				default:
 			}
 
 			if (
-				(strict && scopeCount >= scopes.length)
-				|| (!strict && scopeCount > 0)
-			) { pass = true; }
+				(strict && scopeCount >= scopes.length) ||
+				(!strict && scopeCount > 0)
+			) {
+				pass = true;
+			}
 		});
 
 		return pass;
@@ -340,13 +344,16 @@ module.exports = class App {
 			async list(page = 1) {
 				return new Promise((resolve, reject) => {
 					try {
-						if(entityId){
+						if (entityId) {
 							const params = {
 								page: page,
 							};
 
 							self.gestiOS.$http
-								.get(`/comments/${self.slug}/${entityId}`, params)
+								.get(
+									`/comments/${self.slug}/${entityId}`,
+									params
+								)
 								.then((res) => {
 									resolve({
 										...res,
@@ -354,8 +361,8 @@ module.exports = class App {
 									});
 								})
 								.catch((error) => reject(error));
-						}else{
-							reject(new Error('entityId is required'));
+						} else {
+							reject(new Error("entityId is required"));
 						}
 					} catch (error) {
 						reject(error);
@@ -366,13 +373,16 @@ module.exports = class App {
 			async add(message) {
 				return new Promise((resolve, reject) => {
 					try {
-						if(entityId){
+						if (entityId) {
 							const params = {
 								text: message,
 							};
 
 							self.gestiOS.$http
-								.post(`/comments/${self.slug}/${entityId}`, new URLSearchParams(params))
+								.post(
+									`/comments/${self.slug}/${entityId}`,
+									new URLSearchParams(params)
+								)
 								.then((res) => {
 									resolve({
 										...res,
@@ -380,8 +390,8 @@ module.exports = class App {
 									});
 								})
 								.catch((error) => reject(error));
-						}else{
-							reject(new Error('entityId is required'));
+						} else {
+							reject(new Error("entityId is required"));
 						}
 					} catch (error) {
 						reject(error);
